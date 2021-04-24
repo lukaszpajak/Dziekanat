@@ -18,7 +18,7 @@ namespace Dziekanat
                 Console.WriteLine($"2.Add grade");
                 Console.WriteLine($"3.Display all students");
                 Console.WriteLine($"4.Display students with grade less than or equal to 4");
-                Console.WriteLine($"Insert 0 to exit");
+                Console.WriteLine($"Insert 0 to exit ");
                 input = int.Parse(Console.ReadLine());
 
                 switch (input)
@@ -35,7 +35,7 @@ namespace Dziekanat
                         var secondName = Console.ReadLine();
                         Console.WriteLine($"Insert student birth date in format: dd/mm/yyy");
                         var birthDate = Console.ReadLine();
-                        Console.WriteLine($"Insert student town");
+                        Console.WriteLine($"Insert student town ss");
                         var town = Console.ReadLine();
                         Console.WriteLine($"Insert student field of study");
                         var fieldOfStudy = Console.ReadLine();
@@ -64,6 +64,7 @@ namespace Dziekanat
                             foreach (var names in query)
                             {
                                 Console.WriteLine(names);
+                                Console.WriteLine(" ");
 
                             }
                         }
@@ -99,10 +100,11 @@ namespace Dziekanat
 
                         using (var ctx = new DbModel())
                         {
-                            var query = ctx.Student.Select(s => new { s.StudentId, s.Name, s.SecondName, s.Pesel, s.Town }).ToList();
+                            var query = ctx.Student.Select(s => new { s.StudentId, s.Name, s.SecondName, s.Pesel, s.Town, s.DateOfBirth, s.FieldOfStudy}).ToList();
                             foreach (var names in query)
                             {
                                 Console.WriteLine(names);
+                                Console.WriteLine(" ");
                             }
                         }
                         break;
@@ -120,6 +122,7 @@ namespace Dziekanat
                             foreach (var students in studentsGrade)
                             {
                                 Console.WriteLine(students);
+                                Console.WriteLine(" ");
                             }
            
                         }
