@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Dziekanat
 {
@@ -167,7 +168,7 @@ namespace Dziekanat
                                         a.Student.StudentId,
                                     })
                                     .ToArray();
-                            var xmlNameId =
+                            var xmlName =
                                 ctx
                                     .Grade
                                     .Include(a => a.Student)
@@ -176,19 +177,52 @@ namespace Dziekanat
                                         a.Student.Name,
                                     })
                                     .ToArray();
+                            var xmlSecondName =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new
+                                    {
+                                        a.Student.SecondName,
+                                    })
+                                    .ToArray();
+                            var xmlPesel =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new
+                                    {
+                                        a.Student.Pesel,
+                                    })
+                                    .ToArray();
+                            var xmlTown =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new
+                                    {
+                                        a.Student.Town,
+                                    })
+                                    .ToArray();
 
-
-                            using (XmlWriter writer = XmlWriter.Create("students.xml"))
+                            XmlWriterSettings settings = new XmlWriterSettings();
+                            settings.Indent = true;
+                            settings.NewLineOnAttributes = true;
+                            using (XmlWriter writers = XmlWriter.Create("students.xml", settings))
                         {
-                            writer.WriteStartElement("Students");
+                            writers.WriteStartElement("Students");
                                 for (int i = 0; i < xmlStudentId.Length; i++)
                                 {
-                                    writer.WriteElementString("Student", xmlStudentId[i].ToString());
-                                    
+                                    writers.WriteElementString("StudentId", xmlStudentId[i].ToString());
+                                    writers.WriteElementString("Name", xmlName[i].ToString());
+                                    writers.WriteElementString("SecondName", xmlSecondName[i].ToString());
+                                    writers.WriteElementString("Pesel", xmlPesel[i].ToString());
+                                    writers.WriteElementString("Town", xmlTown[i].ToString());
+
                                 }
                           
-                            writer.WriteEndElement();
-                            writer.Flush();
+                            writers.WriteEndElement();
+                            writers.Flush();
                             
                         }
 
@@ -196,7 +230,18 @@ namespace Dziekanat
 
                         break;
                     case 6:
-                        
+                        var customers =
+            new XElement("customers",
+         
+         from c in Student
+         select
+             new XElement("customer", new XAttribute("id", c.ID),
+                 new XElement("name", c.Name),
+                 new XElement("buys", c.Purchases.Count)
+             )
+         );
+
+                        customers.Dump();
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
