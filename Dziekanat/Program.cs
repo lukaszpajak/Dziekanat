@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Xml;
 
 namespace Dziekanat
 {
@@ -18,6 +19,7 @@ namespace Dziekanat
                 Console.WriteLine($"2.Add grade");
                 Console.WriteLine($"3.Display all students");
                 Console.WriteLine($"4.Display students with grade less than or equal to 4");
+                Console.WriteLine($"5.Save students to XML File");
                 Console.WriteLine($"Insert 0 to exit ");
                 input = int.Parse(Console.ReadLine());
 
@@ -35,7 +37,7 @@ namespace Dziekanat
                         var secondName = Console.ReadLine();
                         Console.WriteLine($"Insert student birth date in format: dd/mm/yyy");
                         var birthDate = Console.ReadLine();
-                        Console.WriteLine($"Insert student town ss");
+                        Console.WriteLine($"Insert student town");
                         var town = Console.ReadLine();
                         Console.WriteLine($"Insert student field of study");
                         var fieldOfStudy = Console.ReadLine();
@@ -60,7 +62,15 @@ namespace Dziekanat
 
                         using (var ctx = new DbModel())
                         {
-                            var query = ctx.Student.Select(s => new { s.StudentId, s.Name, s.SecondName, s.Pesel, s.Town }).ToList();
+                            var query = ctx.Student.Select(s => new 
+                            { 
+                                s.StudentId, 
+                                s.Name, 
+                                s.SecondName, 
+                                s.Pesel, 
+                                s.Town 
+                            })
+                                .ToList();
                             foreach (var names in query)
                             {
                                 Console.WriteLine(names);
@@ -93,17 +103,33 @@ namespace Dziekanat
 
                             ctx.Add(grade);
                             ctx.SaveChanges();
-
+                            
                         }
                         break;
                     case 3:
 
                         using (var ctx = new DbModel())
                         {
-                            var query = ctx.Student.Select(s => new { s.StudentId, s.Name, s.SecondName, s.Pesel, s.Town, s.DateOfBirth, s.FieldOfStudy}).ToList();
-                            foreach (var names in query)
+                            var studentsGrade =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new 
+                                    { 
+                                        a.Student.StudentId, 
+                                        a.Student.Name, 
+                                        a.Student.SecondName, 
+                                        a.Student.Pesel, 
+                                        a.Student.Town, 
+                                        a.Student.DateOfBirth, 
+                                        a.Student.FieldOfStudy, 
+                                        a.YourGrade 
+                                    })
+                                    .ToList();
+
+                            foreach (var students in studentsGrade)
                             {
-                                Console.WriteLine(names);
+                                Console.WriteLine(students);
                                 Console.WriteLine(" ");
                             }
                         }
@@ -127,6 +153,50 @@ namespace Dziekanat
            
                         }
 
+                        break;
+
+                    case 5:
+                        using (var ctx = new DbModel())
+                        {
+                            var xmlStudentId =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new
+                                    {
+                                        a.Student.StudentId,
+                                    })
+                                    .ToArray();
+                            var xmlNameId =
+                                ctx
+                                    .Grade
+                                    .Include(a => a.Student)
+                                    .Select(a => new
+                                    {
+                                        a.Student.Name,
+                                    })
+                                    .ToArray();
+
+
+                            using (XmlWriter writer = XmlWriter.Create("students.xml"))
+                        {
+                            writer.WriteStartElement("Students");
+                                for (int i = 0; i < xmlStudentId.Length; i++)
+                                {
+                                    writer.WriteElementString("Student", xmlStudentId[i].ToString());
+                                    
+                                }
+                          
+                            writer.WriteEndElement();
+                            writer.Flush();
+                            
+                        }
+
+                        }
+
+                        break;
+                    case 6:
+                        
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
