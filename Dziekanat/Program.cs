@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -161,20 +162,30 @@ namespace Dziekanat
                         {
                             var student =
                                 new XElement("Students",
-                                ctx.Student.AsEnumerable().Select(c => new XElement("Student", new XAttribute("Id", c.StudentId), new[] { 
-                                                                                                                                         new XElement("Name", c.Name),
-                                                                                                                                         new XElement("SecondName", c.SecondName),
-                                                                                                                                         new XElement("Pesel", c.Pesel),
-                                                                                                                                         new XElement("Town", c.Town),
-                                                                                                                                         new XElement("DateOfBirth", c.DateOfBirth),
-                                                                                                                                         new XElement("FieldOfStudy", c.FieldOfStudy)})));
+                                ctx.
+                                Student.
+                                AsEnumerable().
+                                Select(c => new XElement("Student", new XAttribute
+                                ("Id", c.StudentId), new[] { 
+                                                            new XElement("Name", c.Name),
+                                                            new XElement("SecondName", c.SecondName),
+                                                            new XElement("Pesel", c.Pesel),
+                                                            new XElement("Town", c.Town),
+                                                            new XElement("DateOfBirth", c.DateOfBirth),
+                                                            new XElement("FieldOfStudy", c.FieldOfStudy)})));
                             Console.WriteLine(student);
                             student.Save(@"C:\Repos\Dziekanat\Dziekanat\student.xml");
+
                         }
 
                         break;
                     case 6:
-                    
+                        XElement root = XElement.Load("student.xml");
+                        IEnumerable<XElement> xmlStudents =
+                            from el in root.Elements("Student")
+                            select el;
+                        foreach (XElement el in xmlStudents)
+                            Console.WriteLine(el);
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
