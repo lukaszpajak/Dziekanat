@@ -159,84 +159,22 @@ namespace Dziekanat
                     case 5:
                         using (var ctx = new DbModel())
                         {
-                            var xmlStudentId =
-                                ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Select(a => new
-                                    {
-                                        a.Student.StudentId,
-                                    })
-                                    .ToArray();
-                            var xmlName =
-                                ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Select(a => new
-                                    {
-                                        a.Student.Name,
-                                    })
-                                    .ToArray();
-                            var xmlSecondName =
-                                ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Select(a => new
-                                    {
-                                        a.Student.SecondName,
-                                    })
-                                    .ToArray();
-                            var xmlPesel =
-                                ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Select(a => new
-                                    {
-                                        a.Student.Pesel,
-                                    })
-                                    .ToArray();
-                            var xmlTown =
-                                ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Select(a => new
-                                    {
-                                        a.Student.Town,
-                                    })
-                                    .ToArray();
-
-                            XmlWriterSettings settings = new XmlWriterSettings();
-                            settings.Indent = true;
-                            settings.NewLineOnAttributes = true;
-                            using (XmlWriter writers = XmlWriter.Create("students.xml", settings))
-                        {
-                            writers.WriteStartElement("Students");
-                                for (int i = 0; i < xmlStudentId.Length; i++)
-                                {
-                                    writers.WriteElementString("StudentId", xmlStudentId[i].ToString());
-                                    writers.WriteElementString("Name", xmlName[i].ToString());
-                                    writers.WriteElementString("SecondName", xmlSecondName[i].ToString());
-                                    writers.WriteElementString("Pesel", xmlPesel[i].ToString());
-                                    writers.WriteElementString("Town", xmlTown[i].ToString());
-
-                                }
-                          
-                            writers.WriteEndElement();
-                            writers.Flush();
-                            
-                        }
-
+                            var student =
+                                new XElement("Students",
+                                ctx.Student.AsEnumerable().Select(c => new XElement("Student", new XAttribute("Id", c.StudentId), new[] { 
+                                                                                                                                         new XElement("Name", c.Name),
+                                                                                                                                         new XElement("SecondName", c.SecondName),
+                                                                                                                                         new XElement("Pesel", c.Pesel),
+                                                                                                                                         new XElement("Town", c.Town),
+                                                                                                                                         new XElement("DateOfBirth", c.DateOfBirth),
+                                                                                                                                         new XElement("FieldOfStudy", c.FieldOfStudy)})));
+                            Console.WriteLine(student);
+                            student.Save(@"C:\Repos\Dziekanat\Dziekanat\student.xml");
                         }
 
                         break;
                     case 6:
-                    using (var ctx = new DbModel())
-                        {
-                        var student=
-                            new XElement("customers",
-                            ctx.AsEnumerable().Select(c => new XElement("Student", new[] { new XElement("id", c.StudentId), new XElement("name", c.Name) })));
-                            student.Dump();
-                        }
+                    
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
