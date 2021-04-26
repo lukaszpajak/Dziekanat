@@ -22,6 +22,7 @@ namespace Dziekanat
                 Console.WriteLine($"3.Display all students");
                 Console.WriteLine($"4.Display students with grade less than or equal to 4");
                 Console.WriteLine($"5.Save students to XML File");
+                Console.WriteLine($"6.Read XML File and display");
                 Console.WriteLine($"Insert 0 to exit ");
                 input = int.Parse(Console.ReadLine());
 
@@ -62,28 +63,10 @@ namespace Dziekanat
                         break;
                     case 2:
 
-                        using (var ctx = new DbModel())
-                        {
-                            var query = ctx.Student.Select(s => new 
-                            { 
-                                s.StudentId, 
-                                s.Name, 
-                                s.SecondName, 
-                                s.Pesel, 
-                                s.Town 
-                            })
-                                .ToList();
-                            foreach (var names in query)
-                            {
-                                Console.WriteLine(names);
-                                Console.WriteLine(" ");
-
-                            }
-                        }
-
+                        
 
                         Console.WriteLine($"Insert grade");
-                        var yourGrade = int.Parse(Console.ReadLine());
+                        var inpute = int.Parse(Console.ReadLine());
                         Console.WriteLine($"Insert verbal grade");
                         var verbalGrade = Console.ReadLine();
                         Console.WriteLine($"Insert relase date");
@@ -94,18 +77,14 @@ namespace Dziekanat
 
                         using (var ctx = new DbModel())
                         {
-
-                            var grade = new Grade
-                            {
-                                YourGrade = yourGrade,
-                                VerbalGrade = verbalGrade,
-                                RelaseDate = relaseDate,
-                                StudentId = currentStudent
-                            };
-
-                            ctx.Add(grade);
-                            ctx.SaveChanges();
                             
+                           
+                            var newGrades = new[] { new Grade { YourGrade = 4 }, new Grade { YourGrade = 5 } };
+                            var newStudent = new Student { Name = "Nikos", SecondName = "Tak", Pesel = "meow", DateOfBirth = "12/12/12", Town = "Pcim", FieldOfStudy = "Taks", Grades = newGradesw };
+
+                            ctx.Add(newStudent);
+                            ctx.SaveChanges();
+
                         }
                         break;
                     case 3:
@@ -183,6 +162,7 @@ namespace Dziekanat
                         XElement root = XElement.Load("student.xml");
                         IEnumerable<XElement> xmlStudents =
                             from el in root.Elements("Student")
+                            
                             select el;
                         foreach (XElement el in xmlStudents)
                             Console.WriteLine(el);

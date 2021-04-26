@@ -1,6 +1,6 @@
 ﻿
+using System.Collections.Generic;
 
-using System.ComponentModel.DataAnnotations;
 
 namespace Dziekanat
 {
@@ -14,7 +14,7 @@ namespace Dziekanat
         public string DateOfBirth { get; set; }
         public string Town { get; set; }
         public string FieldOfStudy { get; set; }
-        public Grade Grade { get; set; }
+        public ICollection<Grade> Grades { get; set; }
 
 
     }

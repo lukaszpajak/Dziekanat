@@ -9,7 +9,7 @@ namespace Dziekanat
         public DbSet<Grade> Grade { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=DziekanatDB;Trusted_Connection=True; ");
+            optionsBuilder.UseSqlServer("Server=.;Database=TestDB;Trusted_Connection=True; ");
 
         }
 
