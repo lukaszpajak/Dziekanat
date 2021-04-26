@@ -230,18 +230,13 @@ namespace Dziekanat
 
                         break;
                     case 6:
-                        var customers =
-            new XElement("customers",
-         
-         from c in Student
-         select
-             new XElement("customer", new XAttribute("id", c.ID),
-                 new XElement("name", c.Name),
-                 new XElement("buys", c.Purchases.Count)
-             )
-         );
-
-                        customers.Dump();
+                    using (var ctx = new DbModel())
+                        {
+                        var student=
+                            new XElement("customers",
+                            ctx.AsEnumerable().Select(c => new XElement("Student", new[] { new XElement("id", c.StudentId), new XElement("name", c.Name) })));
+                            student.Dump();
+                        }
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
