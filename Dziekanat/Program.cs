@@ -154,10 +154,9 @@ namespace Dziekanat
                         {
                             var studentsGrade =
                                 ctx
-                                    .Grade
-                                    .Include(a => a.Student)
-                                    .Where(a => a.YourGrade <= 4)
-                                    .Select(a => new { a.YourGrade, a.Student.Name })
+                                    .Student
+                                    .Include(a => a.Grades)
+                                    .Select(a => new { a.Grades, a.Name })
                                     .ToList();
 
                             foreach (var students in studentsGrade)
