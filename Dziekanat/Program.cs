@@ -63,28 +63,45 @@ namespace Dziekanat
                         break;
                     case 2:
 
-                        
-
-                        Console.WriteLine($"Insert grade");
-                        var inpute = int.Parse(Console.ReadLine());
-                        Console.WriteLine($"Insert verbal grade");
-                        var verbalGrade = Console.ReadLine();
-                        Console.WriteLine($"Insert relase date");
-                        var relaseDate = Console.ReadLine();
-                        Console.WriteLine($"Insert StudentId for which you want to enter the grade");
-                        var currentStudent = int.Parse(Console.ReadLine());
+                        Console.WriteLine($"How much grade do you want to add?");
+                        var inputGradesCount = int.Parse(Console.ReadLine());
 
 
-                        using (var ctx = new DbModel())
+                        for (int i = 0; i < inputGradesCount; i++)
                         {
+
                             
-                           
-                            var newGrades = new[] { new Grade { YourGrade = 4 }, new Grade { YourGrade = 5 } };
-                            var newStudent = new Student { Name = "Nikos", SecondName = "Tak", Pesel = "meow", DateOfBirth = "12/12/12", Town = "Pcim", FieldOfStudy = "Taks", Grades = newGrades };
+                            Console.WriteLine($"Insert grade");
+                            var yourGrade = int.Parse(Console.ReadLine());
+                            Console.WriteLine($"Insert verbal grade");
+                            var verbalGrade = Console.ReadLine();
+                            Console.WriteLine($"Insert relase date");
+                            var relaseDate = Console.ReadLine();
+                            Console.WriteLine($"Insert StudentId for which you want to enter the grade");
+                            var currentStudent = int.Parse(Console.ReadLine());
 
-                            ctx.Add(newStudent);
-                            ctx.SaveChanges();
+                            try
+                            {
+                                using (var ctx = new DbModel())
+                                {
 
+                                    var grade = new Grade
+                                    {
+                                        YourGrade = yourGrade,
+                                        VerbalGrade = verbalGrade,
+                                        RelaseDate = relaseDate,
+                                        StudentId = currentStudent
+                                    };
+
+                                    ctx.Add(grade);
+                                    ctx.SaveChanges();
+
+                                }
+                            }
+                            catch
+                            {
+                                Console.WriteLine($"Wrong ID");
+                            }
                         }
                         break;
                     case 3:
@@ -99,12 +116,11 @@ namespace Dziekanat
                                     { 
                                         a.Student.StudentId, 
                                         a.Student.Name, 
-                                        a.Student.SecondName, 
+                                        a.Student.SecondName,
                                         a.Student.Pesel, 
                                         a.Student.Town, 
                                         a.Student.DateOfBirth, 
-                                        a.Student.FieldOfStudy, 
-                                        a.YourGrade 
+                                        a.Student.FieldOfStudy
                                     })
                                     .ToList();
 
