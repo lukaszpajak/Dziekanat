@@ -80,7 +80,7 @@ namespace Dziekanat
                             
                            
                             var newGrades = new[] { new Grade { YourGrade = 4 }, new Grade { YourGrade = 5 } };
-                            var newStudent = new Student { Name = "Nikos", SecondName = "Tak", Pesel = "meow", DateOfBirth = "12/12/12", Town = "Pcim", FieldOfStudy = "Taks", Grades = newGradesw };
+                            var newStudent = new Student { Name = "Nikos", SecondName = "Tak", Pesel = "meow", DateOfBirth = "12/12/12", Town = "Pcim", FieldOfStudy = "Taks", Grades = newGrades };
 
                             ctx.Add(newStudent);
                             ctx.SaveChanges();
