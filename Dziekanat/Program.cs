@@ -21,7 +21,7 @@ namespace Dziekanat
                 Console.WriteLine($"2.Add grade");
                 Console.WriteLine($"3.Display all students");
                 Console.WriteLine($"4.Display students with grade less than or equal to 4");
-                Console.WriteLine($"5.Save students to XML File");
+                Console.WriteLine($"5.XML editor");
                 Console.WriteLine($"Insert 0 to exit ");
                 input = int.Parse(Console.ReadLine());
 
@@ -158,34 +158,70 @@ namespace Dziekanat
                         break;
 
                     case 5:
-                        using (var ctx = new DbModel())
+
+                        var inputInsideCase = 0;
+                        while (true)
                         {
-                            var student =
-                                new XElement("Students",
-                                ctx.
-                                Student.
-                                AsEnumerable().
-                                Select(c => new XElement("Student", new XAttribute
-                                ("Id", c.StudentId), new[] { 
+
+                            Console.WriteLine($"1.Add student to database from XML file");
+                            Console.WriteLine($"2.Display all students");
+                            Console.WriteLine($"3.Save  database to XML file and display in console");
+                            Console.WriteLine($"Insert 0 to exit ");
+                            inputInsideCase = int.Parse(Console.ReadLine());
+
+                            switch (inputInsideCase)
+                            {
+                                case 0:
+                                    break;
+                                
+                                case 1:
+                                    XElement root = XElement.Load("student.xml");
+                                    IEnumerable<XElement> xmlStudents =
+                                        from el in root.Elements("Student")
+                                        select el;
+
+                                    
+                                    foreach (XElement el in xmlStudents)
+                                    {
+                                        Console.WriteLine(el);
+
+                                    }
+                                    break;
+                                case 2:
+                                    
+                                    break;
+                                case 3:
+                                    using (var ctx = new DbModel())
+                                    {
+                                        var student =
+                                            new XElement("Students",
+                                            ctx.
+                                            Student.
+                                            AsEnumerable().
+                                            Select(c => new XElement("Student", new XAttribute
+                                            ("Id", c.StudentId), new[] {
                                                             new XElement("Name", c.Name),
                                                             new XElement("SecondName", c.SecondName),
                                                             new XElement("Pesel", c.Pesel),
                                                             new XElement("Town", c.Town),
                                                             new XElement("DateOfBirth", c.DateOfBirth),
                                                             new XElement("FieldOfStudy", c.FieldOfStudy)})));
-                            Console.WriteLine(student);
-                            student.Save(@"C:\Repos\Dziekanat\Dziekanat\student.xml");
+                                        Console.WriteLine(student);
+                                        student.Save(@"C:\Repos\Dziekanat\Dziekanat\student.xml");
 
-                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
 
-                        break;
-                    case 6:
-                        XElement root = XElement.Load("student.xml");
-                        IEnumerable<XElement> xmlStudents =
-                            from el in root.Elements("Student")
-                            select el;
-                        foreach (XElement el in xmlStudents)
-                            Console.WriteLine(el);
+
+                            }
+
+                            if (inputInsideCase == 0)
+                            {
+                                break;
+                            }
+                        }  
                         break;
                     default:
                         Console.WriteLine("Wrong value!");
