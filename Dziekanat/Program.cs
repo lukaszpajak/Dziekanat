@@ -105,6 +105,29 @@ namespace Dziekanat
                         }
                         break;
                     case 3:
+                        using (var ctx = new DbModel())
+                        {
+                            var studentsGrade =
+                                ctx
+                                    .Student
+                                    .Select(a => new
+                                    {
+                                        a.StudentId,
+                                        a.Name,
+                                        a.SecondName
+                                        
+                                    })
+                                    .ToList();
+
+                            foreach (var students in studentsGrade)
+                            {
+                                Console.WriteLine(students);
+                                Console.WriteLine(" ");
+                            }
+                        }
+
+                        Console.WriteLine($"Insert StudentId to display all grades");
+                        var displayAllGrades = int.Parse(Console.ReadLine());
 
                         using (var ctx = new DbModel())
                         {
@@ -112,21 +135,16 @@ namespace Dziekanat
                                 ctx
                                     .Grade
                                     .Include(a => a.Student)
+                                    .Where(a => a.StudentId == displayAllGrades)
                                     .Select(a => new 
-                                    { 
-                                        a.Student.StudentId, 
-                                        a.Student.Name, 
-                                        a.Student.SecondName,
-                                        a.Student.Pesel, 
-                                        a.Student.Town, 
-                                        a.Student.DateOfBirth, 
-                                        a.Student.FieldOfStudy
+                                    {   
+                                        a.YourGrade
                                     })
                                     .ToList();
 
                             foreach (var students in studentsGrade)
                             {
-                                Console.WriteLine(students);
+                                Console.Write(students);
                                 Console.WriteLine(" ");
                             }
                         }
