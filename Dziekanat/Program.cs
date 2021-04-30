@@ -21,7 +21,8 @@ namespace Dziekanat
                 Console.WriteLine($"2.Add grade");
                 Console.WriteLine($"3.Display all students");
                 Console.WriteLine($"4.Display students with grade less than or equal to 4");
-                Console.WriteLine($"5.XML editor");
+                Console.WriteLine($"5.Delete student");
+                Console.WriteLine($"6.XML Editor");
                 Console.WriteLine($"Insert 0 to exit ");
                 input = int.Parse(Console.ReadLine());
 
@@ -156,15 +157,33 @@ namespace Dziekanat
                         }
 
                         break;
-
                     case 5:
+                        using (var ctx = new DbModel())
+                        {
+                            Console.WriteLine($"Insert StudentID to remove");
+                            var inputRemove = int.Parse(Console.ReadLine());
 
+                            var studentsToRemove =
+                                ctx
+                                    .Student
+                                    .Where(a => a.StudentId == inputRemove).First();
+
+                            ctx.Remove(studentsToRemove);
+                            Console.WriteLine($"Student removed succesfully");
+                            ctx.SaveChanges();
+                            
+                        }
+                        break;
+                    case 6:
+                        Console.Clear();
                         var inputInsideCase = 0;
                         while (true)
                         {
+                            
 
-                            Console.WriteLine($"1.Add student to database from XML file");
-                            Console.WriteLine($"2.Display all students");
+
+                            Console.WriteLine($"1.Display all students");
+                            Console.WriteLine($"2.Add student to database from XML file");
                             Console.WriteLine($"3.Save  database to XML file and display in console");
                             Console.WriteLine($"Insert 0 to exit ");
                             inputInsideCase = int.Parse(Console.ReadLine());
@@ -175,20 +194,68 @@ namespace Dziekanat
                                     break;
                                 
                                 case 1:
-                                    XElement root = XElement.Load("student.xml");
-                                    IEnumerable<XElement> xmlStudents =
-                                        from el in root.Elements("Student")
-                                        select el;
-
-                                    
-                                    foreach (XElement el in xmlStudents)
+                                    using (var ctx = new DbModel())
                                     {
-                                        Console.WriteLine(el);
+                                        var displayStudents =
+                                            ctx
+                                                .Student
+                                                .Select(a => new
+                                                {
+                                                    a.StudentId,
+                                                    a.Name,
+                                                    a.SecondName,
+                                                    a.Pesel,
+                                                    a.Town,
+                                                    a.DateOfBirth,
+                                                    a.FieldOfStudy
+                                                    
+                                                })
+                                                .ToList();
 
+                                        foreach (var students in displayStudents)
+                                        {
+                                            Console.WriteLine(students);
+                                            Console.WriteLine(" ");
+                                        }
                                     }
+
                                     break;
                                 case 2:
-                                    
+                                    XDocument xDoc = XDocument.Load(@"C:\Repos\Dziekanat\Dziekanat\bin\Debug\net5.0\student.xml");
+                                    List<Student> studentList = xDoc.Descendants("Student").Select
+                                        (student =>
+                                        new Student
+                                        {
+                                            Name = student.Element("Name").Value,
+                                            SecondName = student.Element("SecondName").Value,
+                                            Pesel = student.Element("Pesel").Value,
+                                            DateOfBirth = student.Element("DateOfBirth").Value,
+                                            Town = student.Element("Town").Value,
+                                            FieldOfStudy = student.Element("FieldOfStudy").Value
+
+                                        }).ToList();
+
+                                    using (var ctx = new DbModel())
+                                    {
+                                        foreach (var i in studentList)
+                                        {
+                                        var student = new Student
+                                        {
+                                            Pesel = i.Pesel,
+                                            Name = i.Name,
+                                            SecondName = i.SecondName,
+                                            DateOfBirth = i.DateOfBirth,
+                                            Town = i.Town,
+                                            FieldOfStudy = i.FieldOfStudy
+                                        };
+                                            ctx.Add(student);
+                                            ctx.SaveChanges();
+                                        }
+                                        
+
+                                        
+                                    }
+
                                     break;
                                 case 3:
                                     using (var ctx = new DbModel())

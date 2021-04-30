@@ -48,4 +48,20 @@
     <DateOfBirth>12/12/1970</DateOfBirth>
     <FieldOfStudy>Zawodowka</FieldOfStudy>
   </Student>
+  <Student Id="11">
+    <Name>Arek</Name>
+    <SecondName>Tak</SecondName>
+    <Pesel>123123123</Pesel>
+    <Town>Pcim</Town>
+    <DateOfBirth>21/11/1992</DateOfBirth>
+    <FieldOfStudy>Architekt</FieldOfStudy>
+  </Student>
+  <Student Id="13">
+    <Name>Arek</Name>
+    <SecondName>Tak</SecondName>
+    <Pesel>123123123</Pesel>
+    <Town>Pcim</Town>
+    <DateOfBirth>21/11/1992</DateOfBirth>
+    <FieldOfStudy>Architekt</FieldOfStudy>
+  </Student>
 </Students>
